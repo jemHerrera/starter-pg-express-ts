@@ -6,7 +6,7 @@ import compression from "compression";
 import cors from "cors";
 import mikroOrmConfig from "./db/_config/mikroOrmConfig";
 import { MikroORM, RequestContext, EntityManager } from "@mikro-orm/core";
-import { UserController } from "./routes";
+import { UserController } from "./routes/user";
 
 export const DI = {} as {
   server: http.Server;
@@ -29,7 +29,7 @@ export const init = (async () => {
   app.get("/", (req, res) =>
     res.json({
       message:
-        "Welcome to MikroORM Express TS with User Authentication, try CRUD on /user endpoints",
+        "Welcome to MikroORM Express TS with User Authentication, try /user endpoints",
     })
   );
   app.use("/user", UserController);

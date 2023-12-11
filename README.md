@@ -1,17 +1,12 @@
 # Node-TypeScript Starter with Postgres
 
-Starter api server with Typescript, Express, Postgres and MikroORM. Checkout example user Authentication.
+Starter api server integration with Typescript, Express, Postgres and MikroORM. Check out sample user route.
 
 ## Setup
 
 `npm i`
 
-## Development
-
-`docker compose -f docker-compose.dev.yml up`
-`docker compose -f docker-compose.dev.yml up --build`
-
-## Production
+## Create db and pgAdmin containers
 
 `docker compose up`
 

@@ -1,14 +1,26 @@
 version: "3.8"
 
 services:
-  api:
-    build:
-      context: .
-      target: production
+  db:
+    image: postgres:14.5
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - 4000:4000
-    depends_on:
-      - db
+      - "5432:${DB_PORT}"
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:2023-09-20-2
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=sinchemy@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    volumes:
+      - ./pgadmin-servers.json:/pgadmin4/servers.json
+    ports:
+      - 5002:80
 
 volumes:
   db-volume:
