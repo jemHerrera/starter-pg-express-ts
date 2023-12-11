@@ -1,9 +1,6 @@
-# Node-TypeScript Starter
+# Node-TypeScript Starter with Postgres
 
-A dockerized starter Node-Express project with Typescript
-
-## Node Version
-v18.16.0
+A dockerized starter Node-Express-TS project with Postgres and MikroORM. Has example user Authentication.
 
 ## Setup
 
@@ -17,3 +14,11 @@ v18.16.0
 ## Production
 
 `docker compose up`
+
+## MikroORM create migration files
+
+`npm run create-migration`
+
+## MikroORM migrate to DB
+
+`npm run migrate`
