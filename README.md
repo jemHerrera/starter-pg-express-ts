@@ -1,6 +1,6 @@
 # Node-TypeScript Starter with Postgres
 
-A dockerized starter Node-Express-TS project with Postgres and MikroORM. Has example user Authentication.
+Starter api server with Typescript, Express, Postgres and MikroORM. Checkout example user Authentication.
 
 ## Setup
 
