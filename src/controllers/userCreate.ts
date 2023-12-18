@@ -15,8 +15,7 @@ export const UserCreateRequest = z
   .strict();
 
 export type UserCreateRequest = z.infer<typeof UserCreateRequest>;
-
-export type UserCreateSuccess = Omit<User, "password">;
+export type UserCreateResponse = Omit<User, "password">;
 
 export const userCreate = async (
   req: express.Request<{}, {}, UserCreateRequest>,
@@ -54,7 +53,7 @@ export const userCreate = async (
 
     return res
       .status(200)
-      .json(successResponse as UserCreateSuccess)
+      .json(successResponse as UserCreateResponse)
       .end();
   } catch (error) {
     console.log(error);
