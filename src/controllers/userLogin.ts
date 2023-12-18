@@ -13,6 +13,7 @@ export const UserLoginRequest = z
   .strict();
 
 export type UserLoginRequest = z.infer<typeof UserLoginRequest>;
+export type UserLoginResponse = { sessionToken: string };
 export type SessionTokenPayload = { id: string };
 
 export const userLogin = async (
@@ -39,7 +40,10 @@ export const userLogin = async (
       { expiresIn: "4h" }
     );
 
-    res.status(200).json({ sessionToken }).end();
+    res
+      .status(200)
+      .json({ sessionToken } as UserLoginResponse)
+      .end();
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);

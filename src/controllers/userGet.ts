@@ -3,11 +3,7 @@ import { DI } from "..";
 import { User } from "../db/entities";
 import { AuthenticatedRequest } from "../middlewares/userAuthenticate";
 
-declare namespace Express {
-  interface Request {
-    userId?: string;
-  }
-}
+export type UserGetOwnResponse = Omit<User, "password">;
 
 export const userGetOwn = async (
   req: AuthenticatedRequest,
@@ -24,7 +20,10 @@ export const userGetOwn = async (
     // Remove password from the response
     const { password: p, ...successResponse } = user;
 
-    return res.status(200).json(successResponse).end();
+    return res
+      .status(200)
+      .json(successResponse as UserGetOwnResponse)
+      .end();
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);

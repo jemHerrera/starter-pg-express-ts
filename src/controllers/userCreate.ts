@@ -52,7 +52,10 @@ export const userCreate = async (
     // Remove password from the response
     const { password: p, ...successResponse } = user;
 
-    return res.status(200).json(successResponse).end();
+    return res
+      .status(200)
+      .json(successResponse as UserCreateSuccess)
+      .end();
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
