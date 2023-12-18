@@ -1,6 +1,10 @@
 # Node-TypeScript Starter with Postgres
 
-Starter api server integration with Typescript, Express, Postgres and MikroORM. Check out sample user route.
+Starter api server with User Auth.
+
+## Stack
+
+Typescript, Express, Postgres, MikroORM.
 
 ## Setup
 

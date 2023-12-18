@@ -1,8 +1,10 @@
 import express from "express";
-import { User } from "../../db/entities";
-import { DI } from "../../index";
+import { User } from "../db/entities";
+import { DI } from "../index";
 import z from "zod";
-import { hashPassword } from "../../utils/hashPassword";
+import argon2 from "argon2";
+
+import { Product } from "../db/entities/Product";
 
 export const UserCreateRequest = z
   .object({
@@ -14,6 +16,8 @@ export const UserCreateRequest = z
 
 export type UserCreateRequest = z.infer<typeof UserCreateRequest>;
 
+export type UserCreateSuccess = Omit<User, "password">;
+
 export const userCreate = async (
   req: express.Request<{}, {}, UserCreateRequest>,
   res: express.Response
@@ -22,7 +26,6 @@ export const userCreate = async (
     const { em } = DI;
 
     const invalidRequestBody = !UserCreateRequest.safeParse(req.body).success;
-
     if (invalidRequestBody) return res.sendStatus(406);
 
     const { email, password, username } = req.body;
@@ -30,16 +33,26 @@ export const userCreate = async (
     const existingUser = !!(await em.findOne(User, {
       $or: [{ email }, { username }],
     }));
-
     if (existingUser) return res.sendStatus(409);
 
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await argon2.hash(password);
 
-    const user = em.create(User, { email, password: hashedPassword, username });
+    const defaultProduct = await em.findOne(Product, { name: "Trial" });
+    if (!defaultProduct) return res.sendStatus(500);
+
+    const user = em.create(User, {
+      email,
+      password: hashedPassword,
+      username,
+      product: defaultProduct,
+    });
 
     await em.flush();
 
-    return res.status(200).json(user).end();
+    // Remove password from the response
+    const { password: p, ...successResponse } = user;
+
+    return res.status(200).json(successResponse).end();
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
