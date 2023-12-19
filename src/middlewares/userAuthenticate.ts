@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 export type SessionTokenPayload = {
   id: string;
   isAdmin: boolean;
-  emailVerified: boolean;
 };
 
 export interface AuthenticatedRequest<

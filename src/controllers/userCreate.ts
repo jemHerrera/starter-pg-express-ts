@@ -4,8 +4,6 @@ import { DI } from "../index";
 import z from "zod";
 import argon2 from "argon2";
 
-import { Product } from "../db/entities/Product";
-
 export const UserCreateRequest = z
   .object({
     email: z.string().email(),
@@ -33,14 +31,10 @@ export const userCreate = async (
 
     const hashedPassword = await argon2.hash(password);
 
-    const defaultProduct = await em.findOne(Product, { name: "Trial" });
-    if (!defaultProduct) return res.sendStatus(500);
-
     const user = em.create(User, {
       email,
       password: hashedPassword,
       username,
-      product: defaultProduct,
     });
 
     await em.flush();

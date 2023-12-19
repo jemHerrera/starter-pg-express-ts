@@ -1,6 +1,6 @@
 # Node-TypeScript Starter with Postgres
 
-Starter api server with User Auth.
+A starter api server user Auth and CRUD.
 
 ## Stack
 

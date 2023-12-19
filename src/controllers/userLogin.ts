@@ -35,7 +35,6 @@ export const userLogin = async (
       {
         id: user.id,
         isAdmin: !!user.isAdmin,
-        emailVerified: !!user.emailVerified,
       } as SessionTokenPayload,
       process.env.USER_JWT_PRIVATE_KEY || "",
       { expiresIn: "4h" }

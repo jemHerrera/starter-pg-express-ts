@@ -1,10 +1,9 @@
 import express from "express";
 import { DI } from "..";
-import { Product, User } from "../db/entities";
+import { User } from "../db/entities";
 import argon2 from "argon2";
 import { AuthenticatedRequest } from "../middlewares/userAuthenticate";
 import { z } from "zod";
-import { ProductsSchema } from "../utils/types/Products";
 
 export const UserUpdateOwnRequest = z
   .object({
@@ -67,7 +66,6 @@ export const UserUpdateRequest = z
     id: z.string(),
     options: z.object({
       isAdmin: z.literal(true).optional(),
-      product: ProductsSchema.optional(),
     }),
   })
   .strict();
@@ -86,20 +84,11 @@ export const userUpdate = async (
     if (invalidRequestBody) return res.sendStatus(406);
 
     const { id, options } = req.body;
-    const { isAdmin, product } = options;
 
     const user = await em.findOne(User, { id });
     if (!user) return res.sendStatus(404);
 
-    if (product) {
-      const productEntity = await em.findOne(Product, { name: product });
-
-      if (!productEntity) return res.sendStatus(500);
-
-      user.product = productEntity;
-    }
-
-    if (isAdmin) user.isAdmin = true;
+    if (options.isAdmin) user.isAdmin = true;
 
     await em.flush();
 
