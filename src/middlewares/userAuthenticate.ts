@@ -1,9 +1,20 @@
 import express from "express";
+import { ParamsDictionary } from "express-serve-static-core";
 import jwt from "jsonwebtoken";
-import { SessionTokenPayload } from "../controllers/userLogin";
 
-export interface AuthenticatedRequest extends express.Request {
-  userId?: string;
+export type SessionTokenPayload = {
+  id: string;
+  isAdmin: boolean;
+  emailVerified: boolean;
+};
+
+export interface AuthenticatedRequest<
+  P extends ParamsDictionary = {},
+  ResBody = {},
+  ReqBody = {},
+  Locals extends Record<string, any> = {}
+> extends express.Request<P, ResBody, ReqBody, Locals> {
+  user?: SessionTokenPayload;
 }
 
 export function userAuthenticate(
@@ -19,7 +30,7 @@ export function userAuthenticate(
   jwt.verify(token, process.env.USER_JWT_PRIVATE_KEY as string, (err, user) => {
     if (err || !user) return res.sendStatus(403);
 
-    req.userId = (user as SessionTokenPayload).id;
+    req.user = user as SessionTokenPayload;
 
     next();
   });

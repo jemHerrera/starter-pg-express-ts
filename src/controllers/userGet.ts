@@ -3,27 +3,49 @@ import { DI } from "..";
 import { User } from "../db/entities";
 import { AuthenticatedRequest } from "../middlewares/userAuthenticate";
 
-export type UserGetOwnResponse = Omit<User, "password">;
-
 export const userGetOwn = async (
   req: AuthenticatedRequest,
-  res: express.Response
+  res: express.Response<Omit<User, "password">>
 ) => {
   try {
     const { em } = DI;
 
-    if (!req.userId) return res.sendStatus(500);
+    if (!req.user) return res.sendStatus(500);
 
-    const user = await em.findOne(User, { id: req.userId });
+    const { id } = req.user;
+
+    const user = await em.findOne(User, { id });
     if (!user) return res.sendStatus(500);
 
     // Remove password from the response
     const { password: p, ...successResponse } = user;
 
-    return res
-      .status(200)
-      .json(successResponse as UserGetOwnResponse)
-      .end();
+    return res.status(200).json(successResponse).end();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+};
+
+export const userGet = async (
+  req: AuthenticatedRequest<{}, {}, { id: string }>,
+  res: express.Response<Omit<User, "password">>
+) => {
+  try {
+    const { em } = DI;
+
+    if (!req.user) return res.sendStatus(500);
+    if (!req.user.isAdmin) return res.sendStatus(403);
+
+    const { id } = req.body;
+
+    const user = await em.findOne(User, { id });
+    if (!user) return res.sendStatus(404);
+
+    // Remove password from the response
+    const { password: p, ...successResponse } = user;
+
+    return res.status(200).json(successResponse).end();
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
